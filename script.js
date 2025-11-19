@@ -28,18 +28,22 @@ class Player{
         this.x = 50
         this.y = 30
         this.char = 0
-        this.frame = 0
+        this.frame = 120
         this.delta = 0
+        this.counter = 0
     }
 
     update(){
         if (this.y <= 120-20){
             this.y +=2
         }
+        this.counter = (this.counter+1)%3
     }
 
     draw(){
-        
+        if (this.counter >= 2){
+            this.frame = (this.frame + 24)%216
+        }
         ctx.drawImage(charList[this.char],this.frame,0,24,24,this.x,this.y,24,24)
     }
 }
