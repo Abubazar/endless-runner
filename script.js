@@ -31,27 +31,40 @@ class Player{
         this.frame = 120
         this.delta = 0
         this.counter = 0
+        this.isOnGround = false
     }
 
     update(){
         if (this.y <= 120-20){
             this.y +=2
+            this.isOnGround = false
+        }
+        else{
+            this.isOnGround = true
         }
         this.counter = (this.counter+1)%3
     }
 
     draw(){
-        if (this.counter >= 2){
-            this.frame = (this.frame + 24)%216
+        if (this.isOnGround){
+            if (this.counter >= 2){
+                this.frame += 24
+                if (this.frame > 216){
+                    this.frame = 120
+                }
+            }
+            ctx.drawImage(charList[this.char],this.frame,0,24,24,this.x,this.y,24,24)
         }
-        ctx.drawImage(charList[this.char],this.frame,0,24,24,this.x,this.y,24,24)
+        else{
+            ctx.drawImage(charList[this.char],144,0,24,24,this.x,this.y,24,24)
+        }
     }
 }
 
 // -- INITIALIZE VARIABLES AND ENTITIES --
 let groundPos = 0
 const player = new Player()
-player.char = 0
+player.char = 1
 
 function update(delta){
 groundPos-=30*delta
