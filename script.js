@@ -75,12 +75,34 @@ class Player{
 
 class Cactus{
     constructor(){
-        this.x = 50
-        this.y = 50
+        this.x = canvas.width+10
+        this.type = Math.floor(Math.random()*2)
     }
 
     draw(){
-        ctx.drawImage(cactusImg,this.x,this.y)
+        if (this.type == 0){
+        ctx.drawImage(cactusImg,this.x,96)
+        }
+        else{
+            ctx.drawImage(cactusImg,this.x,96)
+            ctx.drawImage(cactusImg,this.x+10,96)
+        }
+    }
+}
+
+
+function handleCactuses(delta){
+    timerCount+=delta
+    if (timerCount >=1){
+        cactuses.push(new Cactus())
+        timerCount = 0
+    }
+
+    for(let i = 0; i < cactuses.length; i++){
+        cactuses[i].x-= runSpeed*delta
+        if (cactuses[i].x <=-50){
+            cactuses.splice(i,1)
+        }
     }
 }
 
@@ -93,7 +115,6 @@ window.addEventListener('keydown', (e) =>{
         if (clickable){
             player.jump()
             clickable = false
-            console.log(88)
         }
     }
 })
@@ -103,21 +124,26 @@ window.addEventListener('keyup', (e) =>{
 
 
 // -- INITIALIZE VARIABLES AND ENTITIES --
+let runSpeed = 30
 let groundPos = 0
 const player = new Player()
 const cactie = new Cactus()
 player.char = 1
+let timerCount = 0
 
+const cactuses =[]
+cactuses.push(new Cactus())
 
 
 
 // -- GAME FUNCTIONS --
 
 function update(delta){
-groundPos-=80*delta
-groundPos = groundPos%959
-player.update()
-player.delta = delta
+    groundPos-=runSpeed*delta
+    groundPos = groundPos%959
+    player.update()
+    player.delta = delta
+    handleCactuses(delta)
 }
 
 function render(){
@@ -126,7 +152,9 @@ function render(){
     ctx.drawImage(ground,groundPos+959,120)
     player.draw()
 
-    cactie.draw()
+    for(let q =0; q <cactuses.length; q++){
+        cactuses[q].draw()
+    }
 
     ctx.fillStyle = 'black'
     ctx.fillText("Score",50,30)
