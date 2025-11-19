@@ -7,7 +7,8 @@ ctx.font = "10px pixel"
 let lastTime = 0
 const FPS = 60
 const timestep = 1000/FPS
-const gravity = 0.4
+const gravity = 0.3
+let gamePlaying = true
 
 const ground = new Image(); ground.src = 'jungle tileset.png'
 const cactusImg = new Image(); cactusImg.src = 'cactus.png'
@@ -17,10 +18,6 @@ const dino3 = new Image(); dino3.src = 'sheets/tard.png'
 const dino4 = new Image(); dino4.src = 'sheets/vita.png'
 
 const charList = [dino1, dino2, dino3, dino4]
-
-function drawCropAnimation(){
-
-}
 
 class Player{
     constructor(){
@@ -54,7 +51,7 @@ class Player{
     }
 
     jump(){
-        this.velocity = -4
+        if (this.isOnGround){this.velocity = -4}
     }
 
     draw(){
@@ -85,7 +82,7 @@ class Cactus{
         }
         else{
             ctx.drawImage(cactusImg,this.x,96)
-            ctx.drawImage(cactusImg,this.x+10,96)
+            ctx.drawImage(cactusImg,this.x+7,96)
         }
     }
 }
@@ -93,16 +90,33 @@ class Cactus{
 
 function handleCactuses(delta){
     timerCount+=delta
-    if (timerCount >=1){
+    if (timerCount >=2){
         cactuses.push(new Cactus())
         timerCount = 0
     }
 
     for(let i = 0; i < cactuses.length; i++){
-        cactuses[i].x-= runSpeed*delta
+        cactuses[i].x-= Math.round(runSpeed*delta)
         if (cactuses[i].x <=-50){
             cactuses.splice(i,1)
         }
+    }
+}
+
+function collide(){
+    for(let i =0; i<cactuses.length; i++){
+        if(cactuses[i].x+8<=player.x+20 && cactuses[i].x+20>=player.x-10 && player.isOnGround){
+            console.log('damage taken')
+            gamePlaying = false
+        }
+    }
+}
+
+function scoring(delta){
+    scoretimecount+=delta
+    if (scoretimecount >=0.5){
+        score += 1
+        scoretimecount = 0
     }
 }
 
@@ -124,12 +138,14 @@ window.addEventListener('keyup', (e) =>{
 
 
 // -- INITIALIZE VARIABLES AND ENTITIES --
-let runSpeed = 30
+let runSpeed = 100
 let groundPos = 0
 const player = new Player()
 const cactie = new Cactus()
 player.char = 1
 let timerCount = 0
+let scoretimecount = 0
+score = 0
 
 const cactuses =[]
 cactuses.push(new Cactus())
@@ -139,11 +155,13 @@ cactuses.push(new Cactus())
 // -- GAME FUNCTIONS --
 
 function update(delta){
-    groundPos-=runSpeed*delta
+    groundPos-=Math.round(runSpeed*delta)
     groundPos = groundPos%959
     player.update()
     player.delta = delta
     handleCactuses(delta)
+    scoring(delta)
+    collide()
 }
 
 function render(){
@@ -157,20 +175,22 @@ function render(){
     }
 
     ctx.fillStyle = 'black'
-    ctx.fillText("Score",50,30)
+    ctx.fillText("Score: "+score,50,30)
 }
 
 
 
 function gameLoop(ctime){
-    const deltaTime = (ctime - lastTime)/1000
+    if (gamePlaying){
+        const deltaTime = (ctime - lastTime)/1000
 
-    if (ctime - lastTime >= timestep){
-        update(deltaTime)
-        render()
-        lastTime = ctime
+        if (ctime - lastTime >= timestep){
+            update(deltaTime)
+            render()
+            lastTime = ctime
+        }
+
+        requestAnimationFrame(gameLoop)
     }
-
-    requestAnimationFrame(gameLoop)
 }
 requestAnimationFrame(gameLoop)
