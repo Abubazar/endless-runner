@@ -73,6 +73,20 @@ class Player{
     }
 }
 
+class Cactus{
+    constructor(){
+        this.x = 50
+        this.y = 50
+    }
+
+    draw(){
+        ctx.drawImage(cactusImg,this.x,this.y)
+    }
+}
+
+
+// -- INPUT HANDLING --
+
 let clickable = true
 window.addEventListener('keydown', (e) =>{
     if (e.code == 'Space' || e.code == 'ArrowUp'){
@@ -91,6 +105,7 @@ window.addEventListener('keyup', (e) =>{
 // -- INITIALIZE VARIABLES AND ENTITIES --
 let groundPos = 0
 const player = new Player()
+const cactie = new Cactus()
 player.char = 1
 
 
@@ -110,6 +125,8 @@ function render(){
     ctx.drawImage(ground,groundPos,120)
     ctx.drawImage(ground,groundPos+959,120)
     player.draw()
+
+    cactie.draw()
 
     ctx.fillStyle = 'black'
     ctx.fillText("Score",50,30)
