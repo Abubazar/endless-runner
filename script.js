@@ -104,7 +104,7 @@ class Cactus{
 
 function handleCactuses(delta){
     timerCount+=delta
-    if (timerCount >=Math.floor(Math.random()*2+1)){
+    if (timerCount >=Math.floor(Math.random()*2+1)-(score*0.0001)){
         cactuses.push(new Cactus())
         timerCount = 0
     }
@@ -119,7 +119,7 @@ function handleCactuses(delta){
 
 function collide(){
     for(let i =0; i<cactuses.length; i++){
-        if(cactuses[i].x+8<player.x+20 && cactuses[i].x+20>player.x+2 && player.y>85){
+        if(cactuses[i].x+10<player.x+20 && cactuses[i].x+18>player.x+2 && player.y>85){
             gamePlaying = false
             if (score > highscore){
                 highscore = score
@@ -132,7 +132,7 @@ function collide(){
 
 function scoring(delta){
     scoretimecount+=delta
-    if (scoretimecount >=0.1){
+    if (scoretimecount >=0.06){
         score += 1
         scoretimecount = 0
     }
@@ -151,6 +151,7 @@ function resetGame(){
     runSpeed = 160
     groundPos = 0
     player.char = Math.floor(Math.random()*3)
+    player.y=100
     timerCount = 0
     scoretimecount = 0
     score = 0
@@ -169,7 +170,7 @@ window.addEventListener('keydown', (e) =>{
             clickable = false
         }
     }
-    if (!gamePlaying){
+    if (e.code == 'Enter' &&!gamePlaying){
         gamePlaying = true
         requestAnimationFrame(gameLoop)
         resetGame()
@@ -177,6 +178,22 @@ window.addEventListener('keydown', (e) =>{
 })
 window.addEventListener('keyup', (e) =>{
     clickable = true
+})
+window.addEventListener('touchstart', (e) =>{
+    if (clickable){
+        player.jump()
+        clickable = false
+    }
+})
+canvas.addEventListener('touchstart', (e) =>{
+    if (!gamePlaying){
+        gamePlaying = true
+        requestAnimationFrame(gameLoop)
+        resetGame()
+        }
+    })
+window.addEventListener('touchend', (e) =>{
+    clickable=true
 })
 
 
@@ -227,7 +244,7 @@ function render(){
 
     ctx.fillStyle = 'black'
     ctx.fillText("Score: "+score,10,20)
-    ctx.fillText("HS: "+highscore,70,20)
+    ctx.fillText("HS: "+highscore,85,20)
 }
 
 
