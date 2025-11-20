@@ -13,11 +13,19 @@
         align-items: center;
         height: 100vh;
         overflow: hidden;
+        font-family: pixel;
+        image-rendering: pixelated;
     }
     canvas{
         background-color: rgb(255, 206, 127);
         border: 1px solid black;
         border-radius: 2px;
+    }
+    button{
+        font-family: pixel;
+        border-radius: 300px;
+        border: none;
+        padding: 10px;
     }
 
     @font-face {
@@ -29,7 +37,6 @@
 <body>
 
     <canvas id="canvasArea"></canvas>
-    
 </body>
 <script src="script.js" defer></script>
 </html>
