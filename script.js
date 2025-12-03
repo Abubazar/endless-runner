@@ -2,7 +2,6 @@
 const canvas = document.getElementById('canvasArea')
 const ctx = canvas.getContext('2d')
 ctx.imageSmoothingEnabled = false
-canvas.antial
 canvas.style.imageRendering = "pixelated"
 ctx.font = "10px pixel"
 
@@ -62,7 +61,7 @@ class Player{
     }
 
     jump(){
-        if (this.isOnGround){this.velocity = -4}
+        if (this.isOnGround){this.velocity = -4.5}
     }
 
     draw(){
@@ -232,6 +231,8 @@ function update(delta){
 }
 
 function render(){
+    ctx.imageSmoothingEnabled = false
+    canvas.style.imageRendering = "pixelated"
     ctx.clearRect(0,0,canvas.width,canvas.height)
     ctx.drawImage(dayBg,0,0,canvas.width,canvas.height)
     ctx.drawImage(ground,groundPos,120)
